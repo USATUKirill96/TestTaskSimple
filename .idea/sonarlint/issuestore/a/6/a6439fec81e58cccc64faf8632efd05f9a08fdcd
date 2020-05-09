@@ -1,0 +1,6 @@
+
+HWeb:TableWithoutCaptionCheck!" Add a description to this table.(¡şÕÃ
+>	Web:S1827!")Remove this deprecated "width" attribute.(¡şÕÃ
+l Web:TableHeaderHasIdOrScopeCheck$";Add either an 'id' or a 'scope' attribute to this <th> tag.(Ú®—Üùÿÿÿÿ
+g Web:TableHeaderHasIdOrScopeCheck%";Add either an 'id' or a 'scope' attribute to this <th> tag.(½Å»­
+l Web:TableHeaderHasIdOrScopeCheck&";Add either an 'id' or a 'scope' attribute to this <th> tag.(·Ö–ûÿÿÿÿ
