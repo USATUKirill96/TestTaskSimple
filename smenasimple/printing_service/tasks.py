@@ -31,8 +31,10 @@ def create_pdf(check):
         file_path = f"{BASE_DIR}/media/pdf/{check.order['id']}_{check.self_type}.pdf"
         with open(file_path, 'wb') as f:
             f.write(response.content)
-        check.status = "render"
-        check.pdf_file = file_path
-        check.save()
+
     except Exception as e:
         print(e)
+
+    check.status = "render"
+    check.pdf_file = file_path
+    check.save()
