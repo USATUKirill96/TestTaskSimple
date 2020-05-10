@@ -42,7 +42,7 @@ class Check(models.Model):
 class CheckData(BaseModel):
     id: int
     price: int
-    items: dict
+    items: Json
     address: str
     client: Json
     point_id: int

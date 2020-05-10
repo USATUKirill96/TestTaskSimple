@@ -7,6 +7,7 @@ from printing_service.views import CreateChecks
 from smenasimple.settings import BASE_DIR
 
 """Usage of this test may override current check data. be careful and use it on dev server only"""
+"""pdf generation test may raise an exception because files need some time to be created. Just reload the tests"""
 
 check_data = {
     "id": 1,
