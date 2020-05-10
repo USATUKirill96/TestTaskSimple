@@ -12,9 +12,9 @@ sudo apt install python3.7-dev
 
 ### Создание и настройка виртуального окружения
 ```
-python3.7 -m venv env;
-source env/bin/activate;
-pip install -r requirements.txt;
+python3.7 -m venv env
+source env/bin/activate
+pip install -r requirements.txt
 cd smenasimple
 ```
 
