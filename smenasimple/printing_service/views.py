@@ -1,35 +1,19 @@
-import json
-
 from django.http import JsonResponse, HttpResponse
 from django.views import View
 from django.db.models import Q
 from wsgiref.util import FileWrapper
 
-from .models import Check, Printer
+from .models import Check, Printer, CheckData, NewChecksData, CheckToPrintData
 from .tasks import create_pdf
 
 
 class CreateChecks(View):
-
     def post(self, request):
-        # Parse data from request body
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-
-        check_data = {
-            'id': int(body['id']),
-            'price': int(body['price']),
-            'items': body['items'],
-            'address': body['address'],
-            'client': body['client'],
-            'point_id': int(body['point_id']),
-        }
-
-        data_errors = self.get_errors(check_data)
+        validated_data = CheckData.parse_request(request)
+        data_errors = self.get_errors(validated_data.dict())
         if data_errors:
             return data_errors
-
-        self.create_checks(check_data)
+        self.create_checks(validated_data.dict())
         feedback = 'Чеки успешно созданы'
         return JsonResponse({'ok': feedback}, status=200)
 
@@ -56,7 +40,7 @@ class CreateChecks(View):
 
 class NewChecks(View):
     def get(self, request):
-        api_key = request.GET.get('api_key')
+        api_key = NewChecksData.parse_request(request).api_key
         if not Printer.objects.filter(api_key=api_key):
             feedback = 'Ошибка авторизации'
             return JsonResponse({'error': feedback}, status=401)
@@ -69,13 +53,11 @@ class NewChecks(View):
 
 class CheckToPrint(View):
     def get(self, request):
-        api_key = request.GET.get('api_key')
-        check_id = request.GET.get('check_id')
-
-        error = self.errors(api_key, check_id)
+        data = CheckToPrintData.parse_request(request)
+        error = self.errors(data.api_key, data.check_id)
         if error:
             return error
-        check = Check.objects.get(pk=check_id)
+        check = Check.objects.get(pk=data.check_id)
         with open(check.pdf_file.name, 'rb') as file:
             response = HttpResponse(FileWrapper(file), content_type='application/pdf', status=200)
         check.status = 'printed'

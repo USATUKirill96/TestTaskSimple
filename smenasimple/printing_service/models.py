@@ -1,5 +1,8 @@
+import json
+
 from django.db import models
 from django.contrib.postgres.fields import JSONField
+from pydantic import BaseModel, Json
 
 CHECK_TYPES = (("kitchen", "Kitchen"), ("client", "Client"))
 
@@ -32,3 +35,51 @@ class Check(models.Model):
     class Meta:
         verbose_name = "Чек"
         verbose_name_plural = "Чеки"
+
+
+# Pydantic models used to parse and validate data
+
+class CheckData(BaseModel):
+    id: int
+    price: int
+    items: dict
+    address: str
+    client: Json
+    point_id: int
+
+    @staticmethod
+    def parse_request(request):
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+
+        check_data_raw = {
+            'id': body['id'],
+            'price': body['price'],
+            'items': json.dumps(body['items']),
+            'address': body['address'],
+            'client': json.dumps(body['client']),
+            'point_id': body['point_id'],
+        }
+        return CheckData(**check_data_raw)
+
+
+class NewChecksData(BaseModel):
+    api_key: int
+
+    @staticmethod
+    def parse_request(request):
+        api_key = request.GET.get('api_key')
+        return NewChecksData(api_key=api_key)
+
+
+class CheckToPrintData(BaseModel):
+    api_key: int
+    check_id: int
+
+    @staticmethod
+    def parse_request(request):
+        data = {
+            'api_key': request.GET.get('api_key'),
+            'check_id': request.GET.get('check_id')
+        }
+        return CheckToPrintData(**data)

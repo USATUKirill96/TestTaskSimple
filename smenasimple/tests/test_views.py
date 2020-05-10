@@ -52,7 +52,7 @@ class CreateChecksTests(TestCase):
         error = CreateChecks.get_errors(check_data=input_json)
         self.assertNotEqual(error, None)
 
-    def test_errors_everything_alright(self):
+    def test_errors_no_errors(self):
         print("Method: function errors_everything_alright")
         input_json = {'point_id': 1, 'id': 0}
         error = CreateChecks.get_errors(check_data=input_json)
@@ -64,7 +64,6 @@ class CreateChecksTests(TestCase):
         result_kitchen = os.path.exists(f"{BASE_DIR}/media/pdf/1_kitchen.pdf")
         self.assertEqual(result_client, True)
         self.assertEqual(result_kitchen, True)
-
 
 
 
